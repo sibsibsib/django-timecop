@@ -1,0 +1,51 @@
+{% extends "admin/change_list.html" %}
+{% load timecop_tags %}
+
+{% block object-tools %}
+{{ block.super }}
+
+<div id="timeline" style="clear:both; margin: 10px 0"></div>
+
+<style>
+    div.timeline-event {
+        background: rgba(213,221,246, 0.8);
+    }
+</style>
+
+<script>
+    function process_data(raw_data) {
+        var data = [];
+
+        for(var j = 0; j < raw_data.length; j++) {
+
+            var timeline = raw_data[j];
+            var sequence = timeline.sequence;
+
+            for(var i = 0; i < sequence.length; i++) {
+                data.push({
+                    start: new Date(sequence[i].start),
+                    end: new Date(sequence[i].end),
+                    content: sequence[i].slug,
+                    group: timeline.slug
+                });
+            }
+        }
+
+        return data;
+    };
+
+    var raw_data = {% timelines_to_json cl.result_list %};
+
+    var data = process_data(raw_data);
+    var options = {
+        axisOnTop: true,
+        editable: false,
+        selectable: false
+    }
+
+    var timeline = new links.Timeline(document.getElementById('timeline'));
+    timeline.draw(data, options);
+
+</script>
+
+{% endblock object-tools %}

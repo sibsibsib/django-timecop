@@ -1,0 +1,27 @@
+{% extends "admin/change_form.html" %}
+
+
+{% block after_field_sets %}
+
+<div id="timeline" style="clear:both; margin: 10px 0"></div>
+
+
+<style>
+    div.timeline-event.st-delete {
+        border-color: #777;
+        background: #ccc;
+        opacity: 0.5;
+    }
+
+
+</style>
+<script>
+    var views;
+    $(function(){
+        // TODO: controller class
+         views = TimeCop.parse_from_inlines('#spans-group');
+    });
+
+</script>
+{{ block.super}}
+{% endblock after_field_sets %}
