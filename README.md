@@ -42,3 +42,14 @@ marker for the current time (shown in red).
 Change view provides interactive modification of time spans within a timeline.
 Drag + drop to move or resize spans, or edit through the standard inputs.
 
+
+Limitations
+-----------
+
+* When using the Django date picker shortcuts (ie calendar), the timeline
+display will not update.
+
+* When using 'add another' link in the change form, the new item is not inserted
+into the timeline display. Clicking 'save and continue editing' will refresh
+the display.
+
