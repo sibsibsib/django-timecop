@@ -123,7 +123,7 @@
         axisOnTop: true,
         editable: true,
         minHeight: 200,
-        showButtonNew: true,
+        showButtonNew: false,
         showNavigation: true
     };
 
