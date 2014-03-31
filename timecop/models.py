@@ -8,7 +8,7 @@ from django.utils.timezone import now
 from .conf import get_timeline_model_path, get_timespan_model
 
 
-def get_sequence(slug=None):
+def get_sequence(slug):
     current_time = now()
     TimeSpan = get_timespan_model()
     spans = TimeSpan.objects.order_by('-start', '-end', '-id').filter(timeline__slug=slug)
@@ -21,7 +21,8 @@ def get_sequence(slug=None):
             current_span = span
             break
 
-        next_span = span
+        if span.start > current_time:
+            next_span = span
 
     return {
         'current': current_span,
