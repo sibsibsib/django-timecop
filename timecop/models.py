@@ -3,9 +3,34 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.utils.timezone import now
+
+from .conf import get_timeline_model_path, get_timespan_model
 
 
-class Timeline(models.Model):
+def get_sequence(slug=None):
+    current_time = now()
+    TimeSpan = get_timespan_model()
+    spans = TimeSpan.objects.order_by('-start', '-end', '-id').filter(timeline__slug=slug)
+
+    current_span = None
+    next_span = None
+
+    for span in spans:
+        if span.start <= current_time < span.end:
+            current_span = span
+            break
+
+        next_span = span
+
+    return {
+        'current': current_span,
+        'next': next_span,
+        'all_spans':  list(reversed(spans))
+    }
+
+
+class AbstractTimeline(models.Model):
 
     slug = models.SlugField(u'slug', default=None, max_length=255, unique=True,
         help_text=u'a unique identifier')
@@ -23,16 +48,19 @@ class Timeline(models.Model):
         return {
             'id': self.id,
             'slug': self.slug,
-            'sequence': map(TimeSpan.to_dict, self.spans.all()),
+            'sequence': [span.to_dict() for span in self.get_spans()],
         }
 
     def to_json(self, indent=None):
         return mark_safe(json.dumps(self.to_dict(), cls=DjangoJSONEncoder, indent=indent))
 
+    def get_spans(self):
+        return self.spans.all()
 
-class TimeSpan(models.Model):
 
-    timeline = models.ForeignKey(Timeline, default=None, related_name='spans')
+class AbstractTimeSpan(models.Model):
+
+    timeline = models.ForeignKey(get_timeline_model_path(), default=None, related_name='spans')
 
     slug = models.SlugField(u'slug', default=None, max_length=255, unique=True,
         help_text=u'a unique identifier')
@@ -42,6 +70,7 @@ class TimeSpan(models.Model):
         help_text='exclusive')
 
     class Meta:
+        abstract = True
         ordering = ('start', 'end', 'id',)
 
     def __unicode__(self):

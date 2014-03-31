@@ -1,15 +1,15 @@
 from django.contrib import admin
 
-from .models import Timeline, TimeSpan
+from .conf import get_timespan_model
 
 
-class InlineTimeSpanAdmin(admin.TabularInline):
-    model = TimeSpan
+class BaseTimeSpanAdmin(admin.TabularInline):
+
+    model = get_timespan_model()
     extra = 0
 
 
-class TimelineAdmin(admin.ModelAdmin):
-    inlines = (InlineTimeSpanAdmin, )
+class BaseTimelineAdmin(admin.ModelAdmin):
 
     class Media:
         css = {
@@ -25,6 +25,3 @@ class TimelineAdmin(admin.ModelAdmin):
 
             'js/timecop.js',
         )
-
-
-admin.site.register(Timeline, TimelineAdmin)
