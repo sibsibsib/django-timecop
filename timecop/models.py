@@ -4,6 +4,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
+from django.utils.functional import lazy
 
 from .conf import get_timeline_model_path, get_timespan_model
 
@@ -29,6 +30,8 @@ def get_sequence(slug):
         'next': next_span,
         'all_spans':  list(reversed(spans))
     }
+
+get_sequence_lazy = lazy(get_sequence, dict)
 
 
 class AbstractTimeline(models.Model):
