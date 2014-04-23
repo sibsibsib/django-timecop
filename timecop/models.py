@@ -41,6 +41,9 @@ class AbstractTimeline(models.Model):
 
     JSON_ENCODER = DjangoJSONEncoder
 
+    class Meta:
+        abstract = True
+
     def __unicode__(self):
         return self.slug
 
