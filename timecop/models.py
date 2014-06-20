@@ -37,7 +37,7 @@ get_sequence_lazy = lazy(get_sequence, dict)
 class AbstractTimeline(models.Model):
 
     slug = models.SlugField(u'slug', default=None, max_length=255, unique=True,
-        help_text=u'a unique identifier')
+        db_index=True, help_text=u'a unique identifier')
 
     JSON_ENCODER = DjangoJSONEncoder
 
